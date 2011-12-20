@@ -105,6 +105,18 @@ class ControllerModule'.ucwords($modulename).' extends Controller {
 		
 		$this->data["heading_title"] = $this->language->get("heading_title");
 		
+		$this->data["text_enabled"] = $this->language->get("text_enabled");
+		$this->data["text_disabled"] = $this->language->get("text_disabled");
+		$this->data["text_content_top"] = $this->language->get("text_content_top");
+		$this->data["text_content_bottom"] = $this->language->get("text_content_bottom");		
+		$this->data["text_column_left"] = $this->language->get("text_column_left");
+		$this->data["text_column_right"] = $this->language->get("text_column_right");
+		
+		$this->data["entry_layout"] = $this->language->get("entry_layout");
+		$this->data["entry_position"] = $this->language->get("entry_position");
+		$this->data["entry_status"] = $this->language->get("entry_status");
+		$this->data["entry_sort_order"] = $this->language->get("entry_sort_order");
+		
 		//buttons
 		$this->data["button_save"] = $this->language->get("button_save");
 		$this->data["button_cancel"] = $this->language->get("button_cancel");
@@ -153,7 +165,7 @@ class ControllerModule'.ucwords($modulename).' extends Controller {
 		
 		if (isset($this->request->post["'.$modulename.'_module"])) {
 			$this->data["modules"] = $this->request->post["'.$modulename.'_module"];
-		} elseif ($this->config->get("category_module")) { 
+		} elseif ($this->config->get("'.$modulename.'_module")) { 
 			$this->data["modules"] = $this->config->get("'.$modulename.'_module");
 		}	
 				
@@ -207,8 +219,24 @@ $module_admin_language = fopen($folders."/admin/language/".$language."/module/".
 $module_admin_language_text = '<?php
 // Heading 
 $_["heading_title"]  = "'.ucwords($modulename).'"; 
-?>';
 
+// Text
+$_["text_module"]         = "Модули";
+$_["text_success"]        = "Модуль '.$modulename.' успешно обновлен!";
+$_["text_content_top"]    = "Содержание шапки";
+$_["text_content_bottom"] = "Содержание подвала";
+$_["text_column_left"]    = "Левая колонка";
+$_["text_column_right"]   = "Правая колонка";
+
+// Entry
+$_["entry_layout"]        = "Схема:";
+$_["entry_position"]      = "Расположение:";
+$_["entry_status"]        = "Статус:";
+$_["entry_sort_order"]    = "Порядок сортировки:";
+
+// Error
+$_["error_permission"]    = "У Вас нет прав для изменения модуля '.$modulename.'!";
+?>';
 fwrite($module_admin_language, $module_admin_language_text);
 fclose($module_admin_language);
 
@@ -218,7 +246,8 @@ fclose($module_admin_language);
 @mkdir($folders."/admin/view/template/module/");
 $module_admin_template = fopen($folders."/admin/view/template/module/".$modulename.".tpl", 'w');
 
-$module_admin_template_text = '<?php echo $header; ?>
+$module_admin_template_text = '
+<?php echo $header; ?>
 <div id="content">
 <div class="breadcrumb">
   <?php foreach ($breadcrumbs as $breadcrumb) { ?>
@@ -234,8 +263,110 @@ $module_admin_template_text = '<?php echo $header; ?>
     <div class="buttons"><a onclick="$(\'#form\').submit();" class="button"><span><?php echo $button_save; ?></span></a><a onclick="location = \'<?php echo $cancel; ?>\';" class="button"><span><?php echo $button_cancel; ?></span></a></div>
   </div>
   <div class="content">
+    <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+      <table id="module" class="list">
+        <thead>
+          <tr>
+            <td class="left"><?php echo $entry_layout; ?></td>
+            <td class="left"><?php echo $entry_position; ?></td>
+            <td class="left"><?php echo $entry_status; ?></td>
+            <td class="right"><?php echo $entry_sort_order; ?></td>
+            <td></td>
+          </tr>
+        </thead>
+        <?php $module_row = 0; ?>
+        <?php foreach ($modules as $module) { ?>
+        <tbody id="module-row<?php echo $module_row; ?>">
+          <tr>
+            <td class="left"><select name="for_raplase_module[<?php echo $module_row; ?>][layout_id]">
+                <?php foreach ($layouts as $layout) { ?>
+                <?php if ($layout[\'layout_id\'] == $module[\'layout_id\']) { ?>
+                <option value="<?php echo $layout[\'layout_id\']; ?>" selected="selected"><?php echo $layout[\'name\']; ?></option>
+                <?php } else { ?>
+                <option value="<?php echo $layout[\'layout_id\']; ?>"><?php echo $layout[\'name\']; ?></option>
+                <?php } ?>
+                <?php } ?>
+              </select></td>
+            <td class="left"><select name="for_raplase_module[<?php echo $module_row; ?>][position]">
+                <?php if ($module[\'position\'] == \'content_top\') { ?>
+                <option value="content_top" selected="selected"><?php echo $text_content_top; ?></option>
+                <?php } else { ?>
+                <option value="content_top"><?php echo $text_content_top; ?></option>
+                <?php } ?>  
+                <?php if ($module[\'position\'] == \'content_bottom\') { ?>
+                <option value="content_bottom" selected="selected"><?php echo $text_content_bottom; ?></option>
+                <?php } else { ?>
+                <option value="content_bottom"><?php echo $text_content_bottom; ?></option>
+                <?php } ?>     
+                <?php if ($module[\'position\'] == \'column_left\') { ?>
+                <option value="column_left" selected="selected"><?php echo $text_column_left; ?></option>
+                <?php } else { ?>
+                <option value="column_left"><?php echo $text_column_left; ?></option>
+                <?php } ?>
+                <?php if ($module[\'position\'] == \'column_right\') { ?>
+                <option value="column_right" selected="selected"><?php echo $text_column_right; ?></option>
+                <?php } else { ?>
+                <option value="column_right"><?php echo $text_column_right; ?></option>
+                <?php } ?>
+              </select></td>
+            <td class="left"><select name="for_raplase_module[<?php echo $module_row; ?>][status]">
+                <?php if ($module[\'status\']) { ?>
+                <option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+                <option value="0"><?php echo $text_disabled; ?></option>
+                <?php } else { ?>
+                <option value="1"><?php echo $text_enabled; ?></option>
+                <option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+                <?php } ?>
+              </select></td>
+            <td class="right"><input type="text" name="for_raplase_module[<?php echo $module_row; ?>][sort_order]" value="<?php echo $module[\'sort_order\']; ?>" size="3" /></td>
+            <td class="left"><a onclick="$(\'#module-row<?php echo $module_row; ?>\').remove();" class="button"><span><?php echo $button_remove; ?></span></a></td>
+          </tr>
+        </tbody>
+        <?php $module_row++; ?>
+        <?php } ?>
+        <tfoot>
+          <tr>
+            <td colspan="4"></td>
+            <td class="left"><a onclick="addModule();" class="button"><span><?php echo $button_add_module; ?></span></a></td>
+          </tr>
+        </tfoot>
+      </table>
+    </form>
   </div>
-</div>';
+</div>
+<script type="text/javascript"><!--
+var module_row = <?php echo $module_row; ?>;
+
+function addModule() {	
+	html  = \'<tbody id="module-row\' + module_row + \'">\';
+	html += \'  <tr>\';
+	html += \'    <td class="left"><select name="for_raplase_module[\' + module_row + \'][layout_id]">\';
+	<?php foreach ($layouts as $layout) { ?>
+	html += \'      <option value="<?php echo $layout[\'layout_id\']; ?>"><?php echo $layout[\'name\']; ?></option>\';
+	<?php } ?>
+	html += \'    </select></td>\';
+	html += \'    <td class="left"><select name="for_raplase_module[\' + module_row + \'][position]">\';
+	html += \'      <option value="content_top"><?php echo $text_content_top; ?></option>\';
+	html += \'      <option value="content_bottom"><?php echo $text_content_bottom; ?></option>\';
+	html += \'      <option value="column_left"><?php echo $text_column_left; ?></option>\';
+	html += \'      <option value="column_right"><?php echo $text_column_right; ?></option>\';
+	html += \'    </select></td>\';
+	html += \'    <td class="left"><select name="for_raplase_module[\' + module_row + \'][status]">\';
+    html += \'      <option value="1" selected="selected"><?php echo $text_enabled; ?></option>\';
+    html += \'      <option value="0"><?php echo $text_disabled; ?></option>\';
+    html += \'    </select></td>\';
+	html += \'    <td class="right"><input type="text" name="for_raplase_module[\' + module_row + \'][sort_order]" value="" size="3" /></td>\';
+	html += \'    <td class="left"><a onclick="$(\\\'#module-row\' + module_row + \'\\\').remove();" class="button"><span><?php echo $button_remove; ?></span></a></td>\';
+	html += \'  </tr>\';
+	html += \'</tbody>\';
+	
+	$(\'#module tfoot\').before(html);
+	
+	module_row++;
+}
+//--></script>';
+
+$module_admin_template_text = str_replace("for_raplase", $modulename, $module_admin_template_text);
 
 fwrite($module_admin_template, $module_admin_template_text);
 fclose($module_admin_template);
@@ -315,6 +446,23 @@ $module_catalog_language = fopen($folders."/catalog/language/".$language."/modul
 $module_catalog_language_text = '<?php
 // Heading 
 $_["heading_title"]  = "'.ucwords($modulename).'"; 
+
+// Text
+$_["text_module"]         = "Модули";
+$_["text_success"]        = "Модуль '.$modulename.' успешно обновлен!";
+$_["text_content_top"]    = "Содержание шапки";
+$_["text_content_bottom"] = "Содержание подвала";
+$_["text_column_left"]    = "Левая колонка";
+$_["text_column_right"]   = "Правая колонка";
+
+// Entry
+$_["entry_layout"]        = "Схема:";
+$_["entry_position"]      = "Расположение:";
+$_["entry_status"]        = "Статус:";
+$_["entry_sort_order"]    = "Порядок сортировки:";
+
+// Error
+$_["error_permission"]    = "У Вас нет прав для изменения модуля '.$modulename.'!";
 ?>';
 
 fwrite($module_catalog_language, $module_catalog_language_text);
