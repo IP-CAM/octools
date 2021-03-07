@@ -1,20 +1,20 @@
-Консольная утилита для генерации и сборки модулей в OpenCart
+Console utility for generating and assembling modules in OpenCart
 
-### Извлечение модуля:
-* Module name - название модуля.
-* Path to the store - путь к папке, в которой расположен скрипт магазина.
-* Module folder - каталог, в котором будет сгенерирован модуль. По умолчанию это папка build/(название модуля).
-* Language - язык, который используется в модуле. По умолчанию - english.
-* Theme name - тема, которая используется в модуле.
+### Removing the module:
+* Module Name - module name.
+* Path to the Store - the path to the folder in which the store script is located.
+* Module Folder - a directory in which the module will be generated. By default, this is the BUILD / (module name) folder.
+* Language is a language that is used in the module. Default - English.
+* Theme Name is the topic that is used in the module.
 
-[Подробное описание](http://tvorzasp.com/blog/opencart-upakovka-moduleji)
+[Detailed description] (http://tvorzasp.com/blog/opencart-upakovka-moduleji)
 
-### Генерация нового модуля
-* Module name - название будущего модуля, будет использоваться для названия файлов.
-* Module folder - каталог, в котором будет сгенерирован модуль. По умолчанию это папка sceleton/(название модуля).
-* Language - язык, который будет использоваться в модуле. По умолчанию - english.
-* Theme name - тема, для которой будут сгенерированы шаблоны.
-* Autor name - имя разработчика.
-* Generate a models? - нужно ли генерировать модели для этого модуля. Модели будут генерироваться в папке model/module/ для каталога и для админки
+### Generation of the new module
+* Module Name - The name of the future module will be used to name the files.
+* Module Folder - a directory in which the module will be generated. By default, this is the SCELETON / (module name) folder.
+* Language is a language that will be used in the module. Default - English.
+* Theme Name is the topic for which templates will be generated.
+* AUTOR NAME - the name of the developer.
+* Generate a model? - Do you need to generate models for this module. Models will be generated in the Model / Module folder / for the catalog and for admin
 
-[Подробное описание](http://tvorzasp.com/blog/generator-modulej-dlyj-opencart)
+[Detailed description] (http://tvorzsp.com/blog/generator-modulej-dlyj-opencart)
